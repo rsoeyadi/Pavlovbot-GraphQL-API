@@ -1,0 +1,11 @@
+type Query {
+  getMostRecentPrompt: String
+  getTopRatedPrompt: String
+  getAllPrompts: [String]!
+  getPrompt(id: ID!): String
+}
+
+type Mutation {
+  addPrompt: String!
+  deletePrompt(id: ID!): String
+}

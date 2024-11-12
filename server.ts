@@ -26,7 +26,7 @@ const resolvers = {
   Query: {
     getMostRecentPrompt: async (): Promise<string> => {
       try { // pool deals with connecting/releasing implicitly
-        const result = await pool.query('SELECT * from prompts')
+        const result = await pool.query('SELECT * FROM prompts ORDER BY created_at DESC LIMIT 1;')
         return result.rows[0].prompt_text;
       } catch {
         return "Failed to query database"

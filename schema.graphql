@@ -1,7 +1,15 @@
+type Prompt {
+  id: String
+  prompt_text: String
+  created_at: String
+  is_active: Boolean
+  likes_counter: String
+}
+
 type Query {
   getMostRecentPrompt: String
   getTopRatedPrompt: String
-  getAllPrompts: [String]!
+  getAllPrompts: [Prompt]!
   getPrompt(id: ID!): String
 }
 

@@ -1,5 +1,5 @@
 type Prompt {
-  id: String
+  id: ID
   prompt_text: String
   created_at: String
   is_active: Boolean
@@ -7,10 +7,10 @@ type Prompt {
 }
 
 type Query {
-  getMostRecentPrompt: String
-  getTopRatedPrompt: String
+  getMostRecentPrompt: Prompt
+  getTopRatedPrompt: Prompt
   getAllPrompts: [Prompt]!
-  getPrompt(id: ID!): String
+  getPrompt(id: ID!): Prompt
 }
 
 type Mutation {

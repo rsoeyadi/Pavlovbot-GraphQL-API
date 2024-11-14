@@ -5,6 +5,7 @@ import { readFileSync } from "fs";
 import path from "path";
 import { gql } from "graphql-tag";
 import pg from 'pg';
+import graphqlFields from 'graphql-fields'; // so this is what allows us to retrieve the selection fields from the info arg
 
 // create a connection pool for users
 const { Pool } = pg;
@@ -32,20 +33,34 @@ export type Prompt = {
 
 const resolvers = {
   Query: {
-    getMostRecentPrompt: async (): Promise<string> => {
+    getMostRecentPrompt: async (root: any, args: any, context: any, info: any): Promise<Prompt> => {
       try { // pool deals with connecting/releasing implicitly
-        const result = await pool.query('SELECT * FROM prompts ORDER BY created_at DESC LIMIT 1;')
-        return result.rows[0].prompt_text;
-      } catch {
-        return "Failed to query database"
+        const selectionFields = Object.keys(graphqlFields(info))
+        const formattedSelectionFields = selectionFields.join(',')
+        const result = await pool.query(`SELECT ${formattedSelectionFields} FROM prompts ORDER BY created_at DESC LIMIT 1;`)
+        return result.rows[0];
+      } catch (err) {
+        throw err;
       }
     },
-    getAllPrompts: async (): Promise<Prompt[]> => {
+    getAllPrompts: async (parents: any, args: any, context: any, info: any): Promise<Prompt[]> => {
       try {
-        const result = await pool.query<Prompt>('SELECT * from prompts');
+        const selectionFields = Object.keys(graphqlFields(info)); // retrieve the selection fields from the client's query
+        const formattedSelectionFields = selectionFields.join(',');
+        const result = await pool.query<Prompt>(`SELECT ${formattedSelectionFields} from prompts`);
         return result.rows
       } catch {
         return []
+      }
+    },
+    getPrompt: async (root: any, args: any, context: any, info: any): Promise<Prompt> => {
+      try {
+        const selectionFields = Object.keys(graphqlFields(info))
+        const formattedSelectionFields = selectionFields.join(',')
+        const result = await pool.query(`SELECT ${formattedSelectionFields} FROM prompts WHERE id = $1`, [args.id])
+        return result.rows[0];
+      } catch (err) {
+        throw err;
       }
     }
 

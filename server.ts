@@ -62,6 +62,16 @@ const resolvers = {
       } catch (err) {
         throw err;
       }
+    },
+    getTopRatedPrompt: async (root: any, args: any, context: any, info: any): Promise<Prompt> => {
+      try {
+        const selectionFields = Object.keys(graphqlFields(info))
+        const formattedSelectionFields = selectionFields.join(',')
+        const result = await pool.query(`SELECT ${formattedSelectionFields} FROM prompts ORDER BY likes_counter DESC LIMIT 1;`)
+        return result.rows[0];
+      } catch (err) {
+        throw err;
+      }
     }
   }
 }

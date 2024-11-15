@@ -63,8 +63,6 @@ const resolvers = {
         throw err;
       }
     }
-
-
   }
 }
 

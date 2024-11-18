@@ -73,12 +73,15 @@ const resolvers = {
         throw err;
       }
     }
-  }
+  },
+  Mutation: {
+
+  },
 }
 
 // start the server w the schema
 async function startApolloServer(): Promise<void> {
-  const server = new ApolloServer({
+  const server = new ApolloServer({ // constructor
     typeDefs,
     resolvers,
   });
